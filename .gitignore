@@ -1,0 +1,10 @@
+# Nunca suba dados de pacientes nem configuração local
+local/config.json
+*.json.local
+patient.json
+_chirotouch.json
+**/*Statement*.pdf
+**/*Intake*.pdf
+**/*Soap*.pdf
+.DS_Store
+__pycache__/
