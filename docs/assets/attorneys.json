@@ -1,0 +1,17 @@
+[
+  {"name": "Altman Nussbaum Shunnarah", "addr1": "44 School St 6th Floor", "addr2": "Boston, MA 02108", "match": ["altman"]},
+  {"name": "Brack Law", "addr1": "648 Central St, 2nd Floor", "addr2": "Lowell, MA 01852", "match": ["brack"]},
+  {"name": "Brooks Law", "addr1": "10 High St", "addr2": "Medford, MA 02155", "match": ["brooks"]},
+  {"name": "Michael Kelly Injury Lawyers", "addr1": "65A Atlantic Ave", "addr2": "Boston, MA 02110", "match": ["michael kelly"]},
+  {"name": "Perrault Blair Law", "addr1": "79 Haverhill St", "addr2": "Methuen, MA 01844", "match": ["perrault"]},
+  {"name": "Jantzen and Associates, P.C.", "addr1": "4 Liberty Sq", "addr2": "Boston, MA 02109", "match": ["jantzen"]},
+  {"name": "Georges Cote Law", "addr1": "235 Marginal St", "addr2": "Chelsea, MA 02150", "match": ["georges cote", "cote law"]},
+  {"name": "Sweeney Merrigan Law", "addr1": "268 Summer St", "addr2": "Boston, MA 02210", "match": ["sweeney"]},
+  {"name": "Jeffrey Glassman Injury Lawyers", "addr1": "One International Place, Suite 1810", "addr2": "Boston, MA 02110", "match": ["glassman"]},
+  {"name": "Joyce & Associates", "addr1": "205 Portland St 3rd Floor", "addr2": "Boston, MA 02114", "match": ["joyce"]},
+  {"name": "Law Office of Mark H. Ruby", "addr1": "100 Cambridge Street, Suite 1400", "addr2": "Boston, MA 02114", "match": ["mark h. ruby", "ruby"]},
+  {"name": "THE LION'S LAW OFFICE EAST, PC", "addr1": "75 State Street, Suite 100", "addr2": "Boston, MA 02109", "match": ["lion"]},
+  {"name": "Kaufman & Lynd, PLLC", "addr1": "200 E. Robinson St., Suite 400", "addr2": "Orlando, FL 32801", "match": ["kaufman"]},
+  {"name": "Campione Law, P.A", "addr1": "501 W Bay Street, Suite 100", "addr2": "Jacksonville, FL 32202", "match": ["campione"]},
+  {"name": "Gayle A. de Mello Madeira", "addr1": "9 Broadway", "addr2": "Taunton, MA 02780", "match": ["madeira", "de mello"]}
+]
