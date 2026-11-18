@@ -1,0 +1,9 @@
+{
+  "practice_url": "https://practice.chirotouch.com/practice",
+  "discharge_dir": "~/Library/CloudStorage/SynologyDrive-Claude/Julia/Discharge Packet",
+  "letters_dir": "~/Library/CloudStorage/SynologyDrive-Claude/Julia/Letters",
+  "downloads_dir": "~/Downloads",
+  "chrome_profile": "~/.primecare/chrome-profile",
+  "statement_from": "07/04/2025",
+  "default_assignment_pages": [9, 10]
+}
