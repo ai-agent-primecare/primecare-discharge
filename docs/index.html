@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Primecare Discharge Packet</title>
+<style>
+  :root {
+    --bg: #f4f6f7; --card: #ffffff; --ink: #1d2a30; --muted: #5f7179; --line: #d9e1e4;
+    --brand: #5b8592; --brand-ink: #ffffff; --ok: #2f7d4f; --warn: #a3631a; --err: #b23b3b; --sel: #e3eef1;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121719; --card: #1b2225; --ink: #e6eef0; --muted: #9aaab0; --line: #2d393d;
+      --brand: #7aa6b3; --brand-ink: #0f1517; --sel: #24343a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  header { background: var(--brand); color: var(--brand-ink); padding: 18px 16px; }
+  header h1 { margin: 0; font-size: 20px; font-weight: 600; }
+  header p { margin: 4px 0 0; opacity: .9; font-size: 13px; }
+  main { max-width: 1040px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; }
+  section { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+  section h2 { margin: 0 0 12px; font-size: 16px; display: flex; gap: 8px; align-items: center; }
+  .step { background: var(--brand); color: var(--brand-ink); border-radius: 50%; width: 22px; height: 22px; display: inline-grid; place-items: center; font-size: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px 14px; }
+  label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
+  input, select { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 7px 8px; width: 100%; }
+  input:focus, select:focus { outline: 2px solid var(--brand); outline-offset: -1px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .check { display: flex; gap: 6px; align-items: center; font-size: 14px; color: var(--ink); }
+  .check input { width: auto; }
+  button { font: inherit; border: 1px solid var(--brand); background: var(--brand); color: var(--brand-ink); padding: 8px 14px; border-radius: 6px; cursor: pointer; }
+  button.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+  button:disabled { opacity: .5; cursor: default; }
+  .drop { border: 2px dashed var(--line); border-radius: 8px; padding: 14px; text-align: center; color: var(--muted); }
+  .drop.over { border-color: var(--brand); background: var(--sel); }
+  .hint { font-size: 12px; color: var(--muted); }
+  .msg { font-size: 13px; padding: 8px 10px; border-radius: 6px; background: var(--sel); }
+  .msg.warn { color: var(--warn); } .msg.err { color: var(--err); } .msg.ok { color: var(--ok); }
+  .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; max-height: 360px; overflow: auto; }
+  .thumb { border: 2px solid transparent; border-radius: 6px; padding: 2px; cursor: pointer; text-align: center; font-size: 11px; color: var(--muted); }
+  .thumb canvas { width: 100%; display: block; background: #fff; }
+  .thumb.on { border-color: var(--brand); background: var(--sel); color: var(--ink); }
+  ul.files { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  ul.files li { display: flex; justify-content: space-between; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font-size: 14px; }
+  ul.files a { color: var(--brand); }
+  .tag { font-size: 11px; color: var(--muted); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .two { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Primecare — Discharge Packet</h1>
+  <p>Gera Discharge Packet, Lien Notice, Lien Notice Final, Carta de Agradecimento e Letter 112. Tudo roda neste navegador: nenhum dado de paciente é enviado para a internet.</p>
+</header>
+<main>
+  <section>
+    <h2><span class="step">1</span> Arquivos do paciente</h2>
+    <div class="two">
+      <div>
+        <div class="drop" id="dropStatements">Statement(s) do ChiroTouch (PDF)<br><span class="hint">Arraste aqui ou</span> <input type="file" id="fStatements" accept="application/pdf" multiple></div>
+        <div id="stmtInfo" class="hint" style="margin-top:6px"></div>
+      </div>
+      <div>
+        <div class="drop" id="dropIntake">Intake (PDF)<br><span class="hint">Arraste aqui ou</span> <input type="file" id="fIntake" accept="application/pdf"></div>
+        <div class="row" style="margin-top:8px">
+          <span class="hint">Ou importe o arquivo do script local:</span>
+          <input type="file" id="fJson" accept="application/json" style="width:auto">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="step">2</span> Dados do paciente</h2>
+    <div class="grid">
+      <label>MRN<input id="mrn"></label>
+      <label>Nome completo (Primeiro Meio Último)<input id="fullName"></label>
+      <label>Sexo<select id="gender"><option value="F">Feminino (Ms./her)</option><option value="M">Masculino (Mr./his)</option></select></label>
+      <label>DOB<input id="dob" placeholder="MM/DD/YYYY"></label>
+      <label>DOL / DOI<input id="dol" placeholder="MM/DD/YYYY"></label>
+      <label>Endereço linha 1 (rua / apto)<input id="address1"></label>
+      <label>Endereço linha 2 (cidade, estado CEP)<input id="address2"></label>
+      <label>Data da carta<input id="letterDate" placeholder="MM/DD/YYYY"></label>
+    </div>
+    <h3 class="hint" style="margin:16px 0 8px">Tratamento e valores</h3>
+    <div class="grid">
+      <label>Initial exam<input id="initialExam" placeholder="MM/DD/YYYY"></label>
+      <label>Discharge date (último atendimento)<input id="dischargeDate" placeholder="MM/DD/YYYY"></label>
+      <label>Total charges<input id="charges"></label>
+      <label>Total paid<input id="paid"></label>
+      <label>Net outstanding<input id="outstanding" placeholder="calculado automaticamente"></label>
+      <label class="check" style="align-self:end"><input type="checkbox" id="finalExam" checked> Teve final exam (desmarque → Letter 112)</label>
+    </div>
+    <h3 class="hint" style="margin:16px 0 8px">Advogado</h3>
+    <div class="grid">
+      <label>Escritório<select id="attSelect"></select></label>
+      <label>Nome do escritório<input id="attName"></label>
+      <label>Endereço linha 1<input id="attAddr1"></label>
+      <label>Endereço linha 2<input id="attAddr2"></label>
+      <label>Certified mail (tracking)<input id="tracking" placeholder="vazio = linha em branco"></label>
+      <label class="check" style="align-self:end"><input type="checkbox" id="lor"> Tem LOR (Lien "With LOR")</label>
+      <label class="check" style="align-self:end"><input type="checkbox" id="only112"> Sem advogado: só Letter 112 + Carta</label>
+    </div>
+    <p class="hint">"Without LOR": Lien + Irrevocable Assignment. "With LOR": Lien + Assignment + Statement. Sem advogado: escolha "No Attorney" — o Discharge Packet sai com "No Attorney" e não há Lien.</p>
+  </section>
+
+  <section>
+    <h2><span class="step">3</span> Irrevocable Assignment of Benefits (páginas do Intake)</h2>
+    <p class="hint" id="assignHint">Carregue o Intake para escolher as páginas. Normalmente são as páginas 9 e 10.</p>
+    <div class="row" style="margin-bottom:8px"><label style="width:200px">Páginas<input id="assignPages" value="9,10"></label></div>
+    <div class="thumbs" id="thumbs"></div>
+  </section>
+
+  <section>
+    <h2><span class="step">4</span> Gerar</h2>
+    <div class="row">
+      <button id="btnGen">Gerar cartas</button>
+      <button class="ghost" id="btnZip" disabled>Baixar tudo (.zip)</button>
+      <button class="ghost" id="btnSave" disabled>Salvar nas pastas do Synology</button>
+      <button class="ghost" id="btnJson">Baixar dados (.json)</button>
+    </div>
+    <div class="row hint" style="margin-top:8px">
+      Pastas: <button class="ghost" id="pickDP">Discharge Packet…</button> <span id="dpName">não escolhida</span>
+      <button class="ghost" id="pickLT">Letters…</button> <span id="ltName">não escolhida</span>
+    </div>
+    <div id="out" style="margin-top:12px"></div>
+  </section>
+</main>
+
+<script src="vendor/pdf-lib.min.js"></script>
+<script src="vendor/fontkit.umd.min.js"></script>
+<script src="vendor/jszip.min.js"></script>
+<script src="engine.js"></script>
+<script type="module">
+  import * as pdfjsLib from './vendor/pdf.min.mjs';
+  pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('./vendor/pdf.worker.min.mjs', import.meta.url).href;
+  window.pdfjsLib = pdfjsLib;
+  await import('./statement.js');
+  window.dispatchEvent(new Event('pc-ready'));
+</script>
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const PC = window.PC;
+  const state = { statements: [], intake: null, result: null, dirs: {} };
+  let ATT = [];
+  const assetsP = PC.loadAssets(async n => new Uint8Array(await (await fetch('assets/' + n)).arrayBuffer()));
+
+  fetch('assets/attorneys.json').then(r => r.json()).then(list => {
+    ATT = list;
+    const s = $('attSelect');
+    s.innerHTML = '<option value="">— escolher —</option>' + list.map((a, i) => `<option value="${i}">${a.name}</option>`).join('') +
+      '<option value="none">No Attorney</option><option value="other">Outro (digitar)</option>';
+  });
+  $('attSelect').addEventListener('change', e => {
+    const v = e.target.value;
+    if (v === 'none') { setAtt({ name: 'No Attorney', addr1: '', addr2: '' }); }
+    else if (v !== '' && v !== 'other') setAtt(ATT[+v]);
+  });
+  function setAtt(a) { $('attName').value = a.name || ''; $('attAddr1').value = a.addr1 || ''; $('attAddr2').value = a.addr2 || ''; }
+  function matchAtt(name) {
+    const n = String(name || '').toLowerCase();
+    const i = ATT.findIndex(a => a.match.some(m => n.includes(m)));
+    return i;
+  }
+
+  $('letterDate').value = PC.util.today();
+  ['charges', 'paid'].forEach(id => $(id).addEventListener('input', recalc));
+  function recalc() {
+    const c = PC.util.num($('charges').value), p = PC.util.num($('paid').value);
+    if ($('charges').value) $('outstanding').placeholder = PC.util.money(c - p) + ' (automático)';
+  }
+
+  // ---------- file inputs + drag & drop ----------
+  const readFile = f => f.arrayBuffer().then(b => new Uint8Array(b));
+  function dropZone(zone, input, handler) {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handler([...e.dataTransfer.files]); });
+    input.addEventListener('change', () => handler([...input.files]));
+  }
+  window.addEventListener('pc-ready', () => {
+    dropZone($('dropStatements'), $('fStatements'), loadStatements);
+    dropZone($('dropIntake'), $('fIntake'), fs => fs[0] && loadIntake(fs[0]));
+  });
+
+  async function loadStatements(files) {
+    state.statements = [];
+    const parsed = [];
+    for (const f of files) {
+      const b = await readFile(f); state.statements.push({ name: f.name, bytes: b });
+      parsed.push(await PC.readStatement(b));
+    }
+    const s = PC.combineStatements(parsed);
+    const set = (id, v) => { if (v !== undefined && v !== null && v !== '') $(id).value = v; };
+    set('mrn', s.mrn); set('fullName', s.fullName);
+    set('initialExam', s.initialExam); set('dischargeDate', s.lastVisit);
+    set('charges', s.charges.toFixed(2)); set('paid', s.paid.toFixed(2)); recalc();
+    if (s.attorney && !$('attName').value) {
+      const i = matchAtt(s.attorney.name);
+      if (i >= 0) { $('attSelect').value = i; setAtt(ATT[i]); } else { $('attSelect').value = 'other'; setAtt(s.attorney); }
+    }
+    $('stmtInfo').innerHTML = `${files.length} statement(s): charges <b>${PC.util.money(s.charges)}</b>, pagos <b>${PC.util.money(s.paid)}</b>, ` +
+      `visitas ${s.firstVisit} – ${s.lastVisit}${s.attorney ? `, advogado no Statement: <b>${s.attorney.name}</b>` : ', sem advogado no Statement'}.` +
+      (s.lastReExam ? ` Último 99213: ${s.lastReExam}.` : '') +
+      `<br>Confira no ChiroTouch: DOB, DOL, endereço, nome do meio e se o último atendimento foi "MVA - Final Exam".`;
+  }
+
+  async function loadIntake(f) {
+    state.intake = await readFile(f);
+    const pdf = await pdfjsLib.getDocument({ data: state.intake.slice(0) }).promise;
+    const box = $('thumbs'); box.innerHTML = '';
+    $('assignHint').textContent = `Intake com ${pdf.numPages} páginas. Clique nas páginas do "Irrevocable Assignment of Benefits, Authorization and Lien".`;
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i); const vp = page.getViewport({ scale: 0.25 });
+      const c = document.createElement('canvas'); c.width = vp.width; c.height = vp.height;
+      await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
+      const d = document.createElement('div'); d.className = 'thumb'; d.dataset.p = i;
+      d.appendChild(c); d.appendChild(document.createTextNode('p. ' + i));
+      d.addEventListener('click', () => togglePage(i));
+      d.addEventListener('dblclick', () => openPage(i));
+      box.appendChild(d);
+    }
+    paintThumbs();
+  }
+  async function openPage(i) {
+    const b = await PC.extractPages(state.intake, [i]);
+    window.open(URL.createObjectURL(new Blob([b], { type: 'application/pdf' })), '_blank');
+  }
+  const pagesSel = () => $('assignPages').value.split(/[,\s]+/).map(Number).filter(n => n > 0);
+  function togglePage(i) {
+    let p = pagesSel(); p = p.includes(i) ? p.filter(x => x !== i) : [...p, i].sort((a, b) => a - b);
+    $('assignPages').value = p.join(','); paintThumbs();
+  }
+  function paintThumbs() { const p = pagesSel(); document.querySelectorAll('.thumb').forEach(t => t.classList.toggle('on', p.includes(+t.dataset.p))); }
+  $('assignPages').addEventListener('input', paintThumbs);
+
+  // ---------- json import / export ----------
+  const FIELDS = ['mrn', 'fullName', 'gender', 'dob', 'dol', 'address1', 'address2', 'letterDate', 'initialExam',
+    'dischargeDate', 'charges', 'paid', 'outstanding', 'tracking'];
+  function collect() {
+    const d = {}; FIELDS.forEach(k => d[k] = $(k).value.trim());
+    d.finalExam = $('finalExam').checked; d.lor = $('lor').checked; d.only112 = $('only112').checked;
+    d.attorney = { name: $('attName').value.trim(), addr1: $('attAddr1').value.trim(), addr2: $('attAddr2').value.trim() };
+    d.assignmentPages = pagesSel();
+    return d;
+  }
+  function fill(d) {
+    FIELDS.forEach(k => { if (d[k] !== undefined && d[k] !== null) $(k).value = d[k]; });
+    if (d.finalExam !== undefined) $('finalExam').checked = !!d.finalExam;
+    if (d.lor !== undefined) $('lor').checked = !!d.lor;
+    if (d.attorney) { setAtt(d.attorney); const i = matchAtt(d.attorney.name); $('attSelect').value = /^no attorney$/i.test(d.attorney.name) ? 'none' : (i >= 0 ? i : 'other'); }
+    if (d.assignmentPages) $('assignPages').value = d.assignmentPages.join(',');
+    recalc(); paintThumbs();
+  }
+  $('fJson').addEventListener('change', async e => { const f = e.target.files[0]; if (f) fill(JSON.parse(await f.text())); });
+  $('btnJson').addEventListener('click', () => download(new Blob([JSON.stringify(collect(), null, 2)], { type: 'application/json' }), `${$('mrn').value || 'patient'}.json`));
+
+  // ---------- validation ----------
+  const DATE = /^\d{2}\/\d{2}\/\d{4}$/;
+  function validate(d) {
+    const errs = [];
+    if (!d.mrn) errs.push('MRN');
+    if (!d.fullName) errs.push('Nome');
+    for (const k of ['dol', 'letterDate']) if (!DATE.test(d[k])) errs.push(k + ' (MM/DD/YYYY)');
+    if (!d.only112) {
+      for (const k of ['dob', 'initialExam', 'dischargeDate']) if (!DATE.test(d[k])) errs.push(k + ' (MM/DD/YYYY)');
+      if (!d.charges) errs.push('Total charges');
+    }
+    if (!d.address1 || !d.address2) errs.push('Endereço (2 linhas)');
+    return errs;
+  }
+
+  // ---------- generate ----------
+  $('btnGen').addEventListener('click', async () => {
+    const d = collect(); const out = $('out');
+    const errs = validate(d);
+    if (errs.length) { out.innerHTML = `<div class="msg err">Faltando ou inválido: ${errs.join(', ')}</div>`; return; }
+    const noAtt = !d.attorney.name || /^no attorney$/i.test(d.attorney.name);
+    if (!noAtt && !state.intake) { out.innerHTML = '<div class="msg err">Carregue o Intake para separar o Irrevocable Assignment (vai no Lien Notice Final).</div>'; return; }
+    if (d.lor && !state.statements.length) { out.innerHTML = '<div class="msg err">Lien With LOR precisa do Statement anexado.</div>'; return; }
+    out.innerHTML = '<div class="msg">Gerando…</div>';
+    try {
+      const A = await assetsP;
+      const res = await PC.generateAll(A, d, { intake: state.intake, statements: state.statements.map(s => s.bytes) });
+      state.result = res; state.data = d;
+      renderResult(res, noAtt, d);
+      $('btnZip').disabled = false; $('btnSave').disabled = false;
+    } catch (e) { console.error(e); out.innerHTML = `<div class="msg err">Erro: ${e.message}</div>`; }
+  });
+
+  function renderResult(res, noAtt, d) {
+    const warn = [];
+    if (!noAtt && !d.lor) warn.push('Lien "Without LOR" — confirme nas notas do paciente que não chegou LOR.');
+    if (d.finalExam === false) warn.push('Sem final exam: Letter 112 incluída.');
+    const li = res.files.map((f, i) => `<li><span>${f.name} <span class="tag">${f.folder === 'letters' ? 'Letters/' + res.lettersFolder : res.folderName}</span></span>
+      <span><a href="#" data-i="${i}" data-a="view">abrir</a> · <a href="#" data-i="${i}" data-a="dl">baixar</a></span></li>`).join('');
+    $('out').innerHTML = (warn.length ? `<div class="msg warn">${warn.join('<br>')}</div><br>` : '') + `<ul class="files">${li}</ul>`;
+    $('out').querySelectorAll('a[data-i]').forEach(a => a.addEventListener('click', e => {
+      e.preventDefault(); const f = res.files[+a.dataset.i]; const blob = new Blob([f.bytes], { type: 'application/pdf' });
+      if (a.dataset.a === 'view') window.open(URL.createObjectURL(blob), '_blank'); else download(blob, f.name);
+    }));
+  }
+
+  function download(blob, name) {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+  }
+
+  $('btnZip').addEventListener('click', async () => {
+    const r = state.result; const zip = new JSZip();
+    const pf = zip.folder(r.folderName); const lf = zip.folder('Letters/' + r.lettersFolder);
+    r.files.forEach(f => (f.folder === 'letters' ? lf : pf).file(f.name, f.bytes));
+    state.statements.forEach(s => pf.file(`${r.folderName} - Statement${state.statements.length > 1 ? ' ' + (state.statements.indexOf(s) + 1) : ''}.pdf`, s.bytes));
+    if (state.intake) pf.file(`${r.folderName} - Intake.pdf`, state.intake);
+    download(await zip.generateAsync({ type: 'blob' }), r.folderName + '.zip');
+  });
+
+  // ---------- save straight into the Synology folders (Chrome / Edge) ----------
+  const DB = () => new Promise((ok, no) => { const r = indexedDB.open('pc-dirs', 1); r.onupgradeneeded = () => r.result.createObjectStore('h'); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); });
+  async function putDir(k, h) { try { const db = await DB(); db.transaction('h', 'readwrite').objectStore('h').put(h, k); } catch (e) { } }
+  async function getDir(k) { try { const db = await DB(); return await new Promise(ok => { const q = db.transaction('h').objectStore('h').get(k); q.onsuccess = () => ok(q.result); q.onerror = () => ok(null); }); } catch (e) { return null; } }
+  async function pick(k, label) {
+    if (!window.showDirectoryPicker) { alert('Use o Google Chrome para salvar direto nas pastas.'); return; }
+    const h = await window.showDirectoryPicker({ mode: 'readwrite', id: 'pc-' + k }); state.dirs[k] = h; putDir(k, h); $(label).textContent = h.name;
+  }
+  $('pickDP').addEventListener('click', () => pick('dp', 'dpName'));
+  $('pickLT').addEventListener('click', () => pick('lt', 'ltName'));
+  (async () => { for (const [k, l] of [['dp', 'dpName'], ['lt', 'ltName']]) { const h = await getDir(k); if (h) { state.dirs[k] = h; $(l).textContent = h.name + ' (clique em Salvar para autorizar)'; } } })();
+
+  async function ensure(h) {
+    if ((await h.queryPermission({ mode: 'readwrite' })) === 'granted') return true;
+    return (await h.requestPermission({ mode: 'readwrite' })) === 'granted';
+  }
+  async function writeFile(dir, name, bytes) {
+    const fh = await dir.getFileHandle(name, { create: true }); const w = await fh.createWritable(); await w.write(bytes); await w.close();
+  }
+  $('btnSave').addEventListener('click', async () => {
+    const r = state.result; const { dp, lt } = state.dirs;
+    if (!dp || !lt) { alert('Escolha as pastas "Discharge Packet" e "Letters" primeiro.'); return; }
+    if (!(await ensure(dp)) || !(await ensure(lt))) return;
+    const pdir = await dp.getDirectoryHandle(r.folderName, { create: true });
+    const ldir = await lt.getDirectoryHandle(r.lettersFolder, { create: true });
+    for (const f of r.files) await writeFile(f.folder === 'letters' ? ldir : pdir, f.name, f.bytes);
+    for (const [i, s] of state.statements.entries()) {
+      const n = `${r.folderName} - Statement${state.statements.length > 1 ? ' ' + (i + 1) : ''}.pdf`;
+      try { await pdir.getFileHandle(n); } catch (e) { await writeFile(pdir, n, s.bytes); }
+    }
+    if (state.intake) { const n = `${r.folderName} - Intake.pdf`; try { await pdir.getFileHandle(n); } catch (e) { await writeFile(pdir, n, state.intake); } }
+    $('out').insertAdjacentHTML('afterbegin', `<div class="msg ok">Salvo em ${dp.name}/${r.folderName} e ${lt.name}/${r.lettersFolder}.</div><br>`);
+  });
+
+  // hooks for the local automation script
+  window.PCApp = { fill, collect, state };
+})();
+</script>
+</body>
+</html>
